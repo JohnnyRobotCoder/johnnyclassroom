@@ -1,1 +1,22 @@
-
+{
+  "users": [
+    {
+      "username": "johnny123",
+      "name": "Johnny Robot",
+      "role": "Teacher"
+    },
+    {
+      "username": "alex_student",
+      "name": "Alex Smith",
+      "role": "Student"
+    }
+  ]
+}
+{
+  "className": "John's Classroom",
+  "teacher": "John",
+  "announcements": [
+    ""
+  ],
+  "isLive": true
+}
