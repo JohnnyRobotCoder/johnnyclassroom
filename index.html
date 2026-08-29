@@ -3,177 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Device Flow Authentication</title>
+    <title>Johnny Classroom - GitHub Authentication Dashboard</title>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --text-color: #c9d1d9;
-            --text-muted: #8b949e;
-            --btn-primary: #238636;
-            --btn-hover: #2ea043;
-            --accent-blue: #58a6ff;
+            --bg-main: #f8f9fa;
+            --sidebar-bg: #ffffff;
+            --border-muted: #e0e0e0;
+            --text-dark: #3c4043;
+            --text-light: #5f6368;
+            --classroom-blue: #1a73e8;
+            --classroom-blue-hover: #1557b0;
+            --btn-success: #1e7e34;
+            --accent-glow: #e8f0fe;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: "Roboto", RobotoDraft, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
             margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .auth-container {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 32px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        /* Sidebar Panel Layout */
+        .sidebar {
+            width: 240px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-muted);
+            display: flex;
+            flex-direction: column;
+            padding-top: 12px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-light);
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 0 24px 24px 0;
+            margin-right: 8px;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f1f3f4;
+            color: var(--text-dark);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--accent-glow);
+            color: var(--classroom-blue);
+        }
+
+        .sidebar-icon {
+            margin-right: 16px;
+            font-size: 18px;
+            width: 20px;
             text-align: center;
         }
 
-        h2 {
-            margin-top: 0;
+        /* Main Workspace Container */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .top-header {
+            height: 64px;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-muted);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: 22px;
+            color: var(--text-light);
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .header-title strong {
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .workspace-body {
+            padding: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        /* Authentication Card Module */
+        .auth-card {
+            background-color: #ffffff;
+            border: 1px solid var(--border-muted);
+            border-radius: 8px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+            text-align: center;
+        }
+
+        .auth-card h2 {
             font-size: 24px;
-            font-weight: 600;
+            font-weight: 400;
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 16px;
         }
 
-        p {
-            color: var(--text-muted);
+        .auth-card p {
             font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 24px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 28px;
         }
 
-        .btn {
-            background-color: var(--btn-primary);
+        .classroom-btn {
+            background-color: var(--classroom-blue);
             color: #ffffff;
-            border: 1px solid rgba(27, 31, 36, 0.15);
-            border-radius: 6px;
+            border: none;
+            border-radius: 4px;
             padding: 12px 24px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
+            box-shadow: 0 1px 3px 0 rgba(66,133,244,0.3), 0 4px 8px 3px rgba(66,133,244,0.15);
+            transition: background-color 0.2s, box-shadow 0.2s;
             width: 100%;
-            transition: background-color 0.2s ease;
         }
 
-        .btn:hover {
-            background-color: var(--btn-hover);
+        .classroom-btn:hover {
+            background-color: var(--classroom-blue-hover);
+            box-shadow: 0 2px 6px 0 rgba(66,133,244,0.4);
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
-        .code-box {
-            background-color: #070a0e;
-            border: 1px dashed var(--accent-blue);
-            color: var(--accent-blue);
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            padding: 16px;
+        /* Alphanumeric Display Segment */
+        .token-activation-box {
+            background-color: #f1f3f4;
+            border: 2px dashed var(--classroom-blue);
+            color: var(--classroom-blue);
+            font-family: "Courier New", Courier, monospace;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            padding: 18px;
             border-radius: 6px;
-            margin: 20px 0;
-            text-shadow: 0 0 10px rgba(88, 166, 255, 0.2);
+            margin: 24px 0;
         }
 
-        .external-link {
+        .gateway-link {
             display: inline-block;
-            color: var(--accent-blue);
+            color: var(--classroom-blue);
             text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 24px;
         }
 
-        .external-link:hover {
+        .gateway-link:hover {
             text-decoration: underline;
         }
 
-        .status-text {
+        .status-tracker {
             font-size: 13px;
-            font-style: italic;
-            color: var(--text-muted);
+            color: var(--text-light);
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-muted);
         }
 
-        .profile-card {
+        /* Profile Completion Summary */
+        .student-profile {
             text-align: left;
         }
 
-        .avatar-placeholder {
-            width: 64px;
-            height: 64px;
-            background-color: var(--border-color);
+        .profile-header-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-muted);
+            padding-bottom: 16px;
+        }
+
+        .avatar-circle {
+            width: 52px;
+            height: 52px;
+            background-color: var(--accent-glow);
+            color: var(--classroom-blue);
             border-radius: 50%;
-            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
+            margin-right: 16px;
+            font-weight: bold;
         }
 
-        .badge {
+        .student-meta h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .student-meta p {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .course-badge {
             display: inline-block;
-            background-color: #21262d;
-            border: 1px solid var(--border-color);
-            padding: 4px 8px;
-            border-radius: 20px;
+            background-color: #e6f4ea;
+            color: var(--btn-success);
+            padding: 6px 12px;
+            border-radius: 16px;
             font-size: 12px;
-            margin-right: 6px;
+            font-weight: 500;
+            margin-right: 8px;
             margin-top: 8px;
         }
     </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <!-- Initial Login Gateway View -->
-        <div id="initialOptions">
-            <h2>Welcome Screen</h2>
-            <p>Authorize your GitHub account safely via Device Flow protocol without passing credentials through a centralized backend.</p>
-            <button class="btn" onclick="loginWithGitHubDeviceFlow()">Connect GitHub Account</button>
+    <!-- Classroom Side Bar Controls Layout -->
+    <div class="sidebar">
+        <a href="#" class="sidebar-item active">
+            <span class="sidebar-icon">🏠</span> Home Workspace
+        </a>
+        <a href="#" class="sidebar-item">
+            <span class="sidebar-icon">📋</span> Assignment Tasks
+        </a>
+        <a href="#" class="sidebar-item">
+            <span class="sidebar-icon">⚙️</span> Settings Configuration
+        </a>
+    </div>
+
+    <!-- Right Window Content Block Container -->
+    <div class="main-content">
+        <div class="top-header">
+            <h1 class="header-title">Johnny Classroom &gt; <strong>GitHub Workspace Sync</strong></h1>
         </div>
 
-        <!-- Pin Activation Display View -->
-        <div id="deviceFlowStatus" class="hidden">
-            <h2>Device Activation</h2>
-            <p>1. Copy the alphanumeric key block below:</p>
-            <div id="userCodeDisplay" class="code-box">---- ----</div>
-            <p>2. Open the URL linkage gateway below and paste the execution code to authenticate your environment:</p>
-            <a href="https://github.com" target="_blank" class="external-link">https://github.com</a>
-            <div id="pollingStatus" class="status-text">Initial validation pending...</div>
-        </div>
+        <div class="workspace-body">
+            <div class="auth-card">
+                
+                <!-- Initial Options Action View Block -->
+                <div id="initialOptions">
+                    <h2>Account Connection Required</h2>
+                    <p>Link your environment directly to GitHub via Device Flow authentication to sync assignments, save progress data, and execute clean API pulls natively.</p>
+                    <button class="classroom-btn" onclick="loginWithGitHubDeviceFlow()">Sign In with GitHub</button>
+                </div>
 
-        <!-- Target Success Logged-In View -->
-        <div id="profileContainer" class="hidden profile-card">
-            <div class="avatar-placeholder">👤</div>
-            <h2 id="profileName">User Profile</h2>
-            <p id="profileSub" style="margin-bottom: 12px;"></p>
-            <div id="profileSkills"></div>
+                <!-- Live Activation Status View Block -->
+                <div id="deviceFlowStatus" class="hidden">
+                    <h2>Device Validation</h2>
+                    <p>Step 1: Copy your unique temporary activation code block:</p>
+                    <div id="userCodeDisplay" class="token-activation-box">---- ----</div>
+                    <p>Step 2: Visit the linked gateway below and enter the activation key sequence to verify your session:</p>
+                    <a href="https://github.com" target="_blank" class="gateway-link">https://github.com</a>
+                    <div id="pollingStatus" class="status-tracker">Initializing communication interface...</div>
+                </div>
+
+                <!-- Dynamic Profile Successful Loaded Container -->
+                <div id="profileContainer" class="hidden student-profile">
+                    <div class="profile-header-group">
+                        <div class="avatar-circle" id="profileInitial">👤</div>
+                        <div class="student-meta">
+                            <h3 id="profileName">Loading Profile...</h3>
+                            <p id="profileSub">System successfully connected</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-dark);">Authorized Sync Domains:</p>
+                    <div id="profileSkills"></div>
+                </div>
+
+            </div>
         </div>
     </div>
     <script>
-        // CONFIGURATION DATA MATRIX
+        // CONFIGURATION DATA STRINGS
         const CLIENT_ID = 'Ov23lic1ltGsyEM6rDrs'; 
         
-        // IMPORTANT: Swap this out with your custom active Cloudflare Worker link!
+        // IMPORTANT: Update this variable with your deployment URL generated within Cloudflare Workers!
         const PROXY_BASE_URL = 'https://workers.dev'; 
 
         let pollingInterval = null;
 
         // Triggers the device sequence generation handshake via the proxy setup
         async function loginWithGitHubDeviceFlow() {
-            document.getElementById('initialOptions').style.display = 'none';
-            document.getElementById('deviceFlowStatus').style.display = 'block';
-            document.getElementById('pollingStatus').innerText = "Requesting device verification code...";
+            document.getElementById('initialOptions').classList.add('hidden');
+            document.getElementById('deviceFlowStatus').classList.remove('hidden');
+            document.getElementById('pollingStatus').innerText = "Connecting to auth proxy grid...";
 
             try {
                 const response = await fetch(`${PROXY_BASE_URL}/device/code`, {
@@ -189,7 +337,7 @@
                 
                 if (data.user_code) {
                     document.getElementById('userCodeDisplay').innerText = data.user_code;
-                    document.getElementById('pollingStatus').innerText = "Awaiting verification from browser confirmation window...";
+                    document.getElementById('pollingStatus').innerText = "Waiting for you to authorize the key in your browser window...";
                     
                     // Begin querying authentication loop
                     startPolling(data.device_code, data.interval || 5);
@@ -197,7 +345,7 @@
                     throw new Error(data.error_description || "Handshake generation failure.");
                 }
             } catch (err) {
-                document.getElementById('pollingStatus').innerText = "Connection error. Ensure proxy settings match the Cloudflare endpoint layout.";
+                document.getElementById('pollingStatus').innerText = "Sync Error: Ensure proxy configurations match your Cloudflare routing layout.";
                 console.error(err);
             }
         }
@@ -221,7 +369,7 @@
 
                     if (data.access_token) {
                         clearInterval(pollingInterval);
-                        document.getElementById('pollingStatus').innerText = "Authorized! Syncing token payload...";
+                        document.getElementById('pollingStatus').innerText = "Access granted! Re-syncing database profiles...";
                         fetchGitHubUserProfile(data.access_token);
                     } else if (data.error === 'authorization_pending') {
                         // User hasn't finished the entry process yet; hold loop execution natively
@@ -246,26 +394,33 @@
                     headers: { 'Authorization': `token ${token}` }
                 });
                 const user = await response.json();
-                showProfile(user.name || user.login, 'Authenticated Developer Client', ['Pure JS', 'GitHub Engine']);
+                
+                const profileTitle = user.name || user.login;
+                showProfile(profileTitle, `Student Developer Profile (${user.login})`, ['Johnny Classroom API', 'GitHub Integration', 'CodeHS Sandbox']);
             } catch (err) {
-                showProfile('GitHub User', 'Authenticated User', ['Pure JS', 'GitHub Engine']);
+                showProfile('Authenticated User', 'Student Developer Profile', ['Johnny Classroom API', 'GitHub Integration']);
             }
         }
 
         // UI Transition Engine mapping token outputs to interface elements
         function showProfile(name, metaText, tagsArray) {
-            document.getElementById('deviceFlowStatus').style.display = 'none';
+            document.getElementById('deviceFlowStatus').classList.add('hidden');
             const targetContainer = document.getElementById('profileContainer');
-            targetContainer.style.display = 'block';
+            targetContainer.classList.remove('hidden');
 
             document.getElementById('profileName').innerText = name;
             document.getElementById('profileSub').innerText = metaText;
+            
+            // Set first letter of user name inside the profile logo circle
+            if(name && name.length > 0) {
+                document.getElementById('profileInitial').innerText = name.charAt(0).toUpperCase();
+            }
 
             const trackingContainer = document.getElementById('profileSkills');
             trackingContainer.innerHTML = '';
             tagsArray.forEach(tag => {
                 const badgeSpan = document.createElement('span');
-                badgeSpan.className = 'badge';
+                badgeSpan.className = 'course-badge';
                 badgeSpan.innerText = tag;
                 trackingContainer.appendChild(badgeSpan);
             });
