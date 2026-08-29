@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Johnny Classroom</title>
+        <link rel="icon" href="https://codehs.com/uploads/b96481bcf30fa84e3357281066bf333c">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: Roboto, "Google Sans Flex";        
+            }
 
+            header {
+                background-color: white;
+                padding: 15px 30px;
+                border-bottom: 2px solid #ddd;
+                display: flex;
+                align-items: center;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            header img { height: 40px; margin-right: 15px; }
+            header h1 { margin: 0; font-size: 28px; color: #e54c30; }
+            
+            #dataContainer {
+                padding: 20px;
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <img src="https://codehs.com/uploads/e6fc298913be3641a2ed6781b7ccfde7" alt="JohnnyPlanes Logo">
+            <h1>Johnny Classroom</h1>
+            <button onclick="signIn()">Sign In</button>
+        </header>
+
+        <dialog id="signInDialog"></dialog>
+
+        <div id="dataContainer"></div>
+
+        <script>
+          const signInPopup = document.getElementById('signInDialog');
+          const dataContainer = document.getElementById('dataContainer');
+
+          function signIn() {
+              fetch('https://raw.githubusercontent.com/JohnnyRobotCoder/johnnyclassroom/main/data.json')
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error('Could not find data.json');
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      console.log('Fetched data:', data);
+                      // Displays raw JSON on page when button is clicked
+                      dataContainer.innerText = JSON.stringify(data, null, 2);
+                  })
+                  .catch(error => console.error('Fetch error:', error));        
+          }
+        </script>
+    </body>    
+</html>
