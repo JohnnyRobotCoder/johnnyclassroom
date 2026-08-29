@@ -1,1 +1,240 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="color-scheme" content="light dark"> <title>Johnny Classroom</title> <link rel="icon" href="https://codehs.com/uploads/b96481bcf30fa84e3357281066bf333c"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <style> /* CSS Variables for Browser Theme Matching */ :root { color-scheme: light dark; /* Light mode defaults */ --bg-color: #ffffff; --text-color: #202124; --header-bg: #f1f3f4; --elements-bg: #ffffff; --card-bg: #ffffff; --border-color: #e0e0e0; --list-bg: #f8f9fa; --accent: #1a73e8; --shadow: rgba(0, 0, 0, 0.1); } /* Listens directly to Chrome browser theme setting */ @media (prefers-color-scheme: dark) { :root { --bg-color: #202124; --text-color: #e8eaed; --elements-bg: #292a2d; --card-bg: #292a2d; --border-color: #3c4043; --list-bg: #35363a; --accent: #8ab4f8; --shadow: rgba(0, 0, 0, 0.4); } } /* Tag Selectors */ body { font-family: Roboto, "Google Sans Flex", sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; transition: background-color 0.2s ease, color 0.2s ease; } header { background-color: var(--header-bg); border-bottom: 1px solid var(--border-color); padding: 15px 30px; display: flex; align-items: center; box-shadow: 0 2px 4px var(--shadow); transition: background-color 0.2s ease; } header img { height: 40px; margin-right: 15px; } header h1 { margin: 0; font-size: 28px; color: #e54c30; } header button { margin-left: auto; } ul { list-style-type: none; padding: 0; } li { background: var(--list-bg); border: 1px solid var(--border-color); margin: 6px 0; padding: 8px; border-radius: 6px; font-family: monospace; } .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; max-width: 350px; margin: 40px auto; text-align: center; box-shadow: 0 4px 12px var(--shadow); transition: background-color 0.2s ease; } dialog { background-color: var(--elements-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px var(--shadow); text-align: center; } dialog::backdrop { background-color: rgba(0, 0, 0, 0.5); } button { background-color: var(--accent); color: white; border: none; padding: 10px 18px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 6px; } button:hover { opacity: 0.9; } .close-btn { background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); } .input-group { margin: 12px 0; text-align: left; } .input-group input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-color); color: var(--text-color); box-sizing: border-box; } </style> </head> <body> <header> <img src="https://codehs.com/uploads/e6fc298913be3641a2ed6781b7ccfde7" alt="JohnnyPlanes Logo"> <h1>Johnny Classroom</h1> <button id="authBtn" onclick="document.getElementById('signInPopup').showModal()">Sign In</button> </header> <div id="profileCard" class="card" style="display: none;"> <h2 id="userName"></h2> <p id="userRole"></p> <h3>My Classes</h3> <ul id="classList"></ul> </div> <dialog id="signInPopup"> <h2>Sign In</h2> <button onclick="loginWithGitHub()">Sign in with GitHub</button> <br> <button onclick="togglePasswordForm()">Sign in with Username and Password</button> <div id="passwordForm" style="display: none; margin-top: 15px;"> <div class="input-group"> <label for="usernameInput">Username:</label> <input type="text" id="usernameInput" placeholder="Enter username"> </div> <div class="input-group"> <label for="passwordInput">Password:</label> <input type="password" id="passwordInput" placeholder="Enter password"> </div> <button onclick="signInWithPassword()">Submit</button> </div> <br><br> <button class="close-btn" onclick="document.getElementById('signInPopup').close()">Close</button> </dialog> <script> const CLIENT_ID = 'Ov23lic1ltGsyEM6rDrs'; // Redirects current tab to GitHub authorize URL function loginWithGitHub() { window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`; } // Toggles local login form function togglePasswordForm() { const form = document.getElementById('passwordForm'); form.style.display = form.style.display === 'none' ? 'block' : 'none'; } // Handles local username/password sign-in function signInWithPassword() { const user = document.getElementById('usernameInput').value || 'Johnny Coder'; showProfile(user, 'Student (Password Login)', ['Intro to Web Dev', 'Python 101']); } // Display user profile card function showProfile(name, role, classes) { document.getElementById('signInPopup').close(); document.getElementById('profileCard').style.display = 'block'; document.getElementById('authBtn').style.display = 'none'; document.getElementById('userName').textContent = name; document.getElementById('userRole').textContent = role; const classList = document.getElementById('classList'); classList.innerHTML = ''; classes.forEach(c => { const li = document.createElement('li'); li.textContent = c; classList.appendChild(li); }); } // Check if redirected back from GitHub with authorization code window.addEventListener('DOMContentLoaded', () => { const urlParams = new URLSearchParams(window.location.search); if (urlParams.has('code')) { showProfile('GitHub User', 'Authenticated via GitHub OAuth', ['Advanced JS', 'GitHub Workflows']); } }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Johnny Classroom</title>
+    <link rel="icon" href="https://codehs.com/uploads/b96481bcf30fa84e3357281066bf333c">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Browser Theme Matching */
+        :root {
+            color-scheme: light dark;
+            /* Light mode defaults */
+            --bg-color: #ffffff;
+            --text-color: #202124;
+            --header-bg: #f1f3f4;
+            --elements-bg: #ffffff;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --list-bg: #f8f9fa;
+            --accent: #1a73e8;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Listens directly to Chrome browser theme setting */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #202124;
+                --text-color: #e8eaed;
+                --elements-bg: #292a2d;
+                --card-bg: #292a2d;
+                --border-color: #3c4043;
+                --list-bg: #35363a;
+                --accent: #8ab4f8;
+                --shadow: rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        /* Tag Selectors */
+        body {
+            font-family: Roboto, "Google Sans Flex", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: background-color 0.2s ease;
+        }
+
+        header img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #e54c30;
+        }
+
+        header button {
+            margin-left: auto;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: var(--list-bg);
+            border: 1px solid var(--border-color);
+            margin: 6px 0;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 350px;
+            margin: 40px auto;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: background-color 0.2s ease;
+        }
+
+        dialog {
+            background-color: var(--elements-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 8px 24px var(--shadow);
+            text-align: center;
+        }
+
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 6px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .close-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .input-group {
+            margin: 12px 0;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://codehs.com/uploads/e6fc298913be3641a2ed6781b7ccfde7" alt="JohnnyPlanes Logo">
+        <h1>Johnny Classroom</h1>
+        <button id="authBtn" onclick="document.getElementById('signInPopup').showModal()">Sign In</button>
+    </header>
+
+    <div id="profileCard" class="card" style="display: none;">
+        <h2 id="userName"></h2>
+        <p id="userRole"></p>
+        <h3>My Classes</h3>
+        <ul id="classList"></ul>
+    </div>
+
+    <dialog id="signInPopup">
+        <h2>Sign In</h2>
+        <button onclick="loginWithGitHub()">Sign in with GitHub</button>
+        <br>
+        <button onclick="togglePasswordForm()">Sign in with Username and Password</button>
+        
+        <div id="passwordForm" style="display: none; margin-top: 15px;">
+            <div class="input-group">
+                <label for="usernameInput">Username:</label>
+                <input type="text" id="usernameInput" placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label for="passwordInput">Password:</label>
+                <input type="password" id="passwordInput" placeholder="Enter password">
+            </div>
+            <button onclick="signInWithPassword()">Submit</button>
+        </div>
+        <br><br>
+        <button class="close-btn" onclick="document.getElementById('signInPopup').close()">Close</button>
+    </dialog>
+
+    <script>
+        const CLIENT_ID = 'Ov23lic1ltGsyEM6rDrs';
+
+        // Redirects current tab to GitHub authorize URL
+        function loginWithGitHub() {
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`;
+        }
+
+        // Toggles local login form
+        function togglePasswordForm() {
+            const form = document.getElementById('passwordForm');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Handles local username/password sign-in
+        function signInWithPassword() {
+            const user = document.getElementById('usernameInput').value || 'Johnny Coder';
+            showProfile(user, 'Student (Password Login)', ['Intro to Web Dev', 'Python 101']);
+        }
+
+        // Display user profile card
+        function showProfile(name, role, classes) {
+            document.getElementById('signInPopup').close();
+            document.getElementById('profileCard').style.display = 'block';
+            document.getElementById('authBtn').style.display = 'none';
+            document.getElementById('userName').textContent = name;
+            document.getElementById('userRole').textContent = role;
+            
+            const classList = document.getElementById('classList');
+            classList.innerHTML = '';
+            
+            classes.forEach(c => {
+                const li = document.createElement('li');
+                li.textContent = c;
+                classList.appendChild(li);
+            });
+        }
+
+        // Check if redirected back from GitHub with authorization code
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('code')) {
+                showProfile('GitHub User', 'Authenticated via GitHub OAuth', ['Advanced JS', 'GitHub Workflows']);
+            }
+        });
+    </script>
+
+</body>
+</html>
