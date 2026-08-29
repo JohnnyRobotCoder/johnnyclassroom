@@ -170,11 +170,7 @@
 
     <dialog id="signInPopup">
         <h2>Sign In</h2>
-        <button onclick="loginWithGitHub()">Sign in with GitHub</button>
-        <br>
-        <button onclick="togglePasswordForm()">Sign in with Username and Password</button>
-        
-        <div id="passwordForm" style="display: none; margin-top: 15px;">
+        <div id="passwordForm">
             <div class="input-group">
                 <label for="usernameInput">Username:</label>
                 <input type="text" id="usernameInput" placeholder="Enter username">
@@ -183,57 +179,70 @@
                 <label for="passwordInput">Password:</label>
                 <input type="password" id="passwordInput" placeholder="Enter password">
             </div>
-            <button onclick="signInWithPassword()">Submit</button>
+            <button onclick="signIn()">Sign In</button>
         </div>
         <br><br>
         <button class="close-btn" onclick="document.getElementById('signInPopup').close()">Close</button>
     </dialog>
 
     <script>
-        const CLIENT_ID = 'Ov23lic1ltGsyEM6rDrs';
+        const owner = 'YOUR_GITHUB_USERNAME';
+        const repo = 'YOUR_REPO_NAME';
+        const path = 'data.json'; // Target the JSON file
+        const token = process.env.GITHUB_TOKEN;
+        const { jsonData, sha } = await fetchJsonFile();
+        
+        async function updateGitHubFile(newText, fileSha) {
+            // Encode your edited text back to Base64
+            const updatedContentBase64 = Buffer.from(newText, 'utf-8').toString('base64');
 
-        // Redirects current tab to GitHub authorize URL
-        function loginWithGitHub() {
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}`;
-        }
+            const response = await fetch(`https://github.com{owner}/${repo}/contents/${path}`, {
+                method: 'PUT',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Accept': 'application/vnd.github+json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  message: 'Updated file via website text editor',
+                  content: updatedContentBase64,
+                  sha: fileSha // Identifies the version you are replacing
+                })
+              });
 
-        // Toggles local login form
-        function togglePasswordForm() {
-            const form = document.getElementById('passwordForm');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Handles local username/password sign-in
-        function signInWithPassword() {
-            const user = document.getElementById('usernameInput').value || 'Johnny Coder';
-            showProfile(user, 'Student (Password Login)', ['Intro to Web Dev', 'Python 101']);
-        }
-
-        // Display user profile card
-        function showProfile(name, role, classes) {
-            document.getElementById('signInPopup').close();
-            document.getElementById('profileCard').style.display = 'block';
-            document.getElementById('authBtn').style.display = 'none';
-            document.getElementById('userName').textContent = name;
-            document.getElementById('userRole').textContent = role;
-            
-            const classList = document.getElementById('classList');
-            classList.innerHTML = '';
-            
-            classes.forEach(c => {
-                const li = document.createElement('li');
-                li.textContent = c;
-                classList.appendChild(li);
-            });
-        }
-
-        // Check if redirected back from GitHub with authorization code
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('iss')) {
-                window.location.href = params.get("iss");
+              const result = await response.json();
+              return result;
             }
-        });
+
+        function signIn() {
+            
+        }
+
+        async function updateJsonFile(modifiedObject, fileSha) {
+          // 1. Convert object back to a clean string (with 2-space indentation)
+          const jsonString = JSON.stringify(modifiedObject, null, 2);
+  
+          // 2. Encode the string to Base64
+          const updatedContentBase64 = Buffer.from(jsonString, 'utf-8').toString('base64');
+
+          // 3. PUT the data back to GitHub
+          const response = await fetch(`https://github.com{owner}/${repo}/contents/${path}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github+json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: 'Automated data.json update via website',
+              content: updatedContentBase64,
+              sha: fileSha
+            })
+          });
+
+          return await response.json();
+        }
+
     </script>
 
 </body>
