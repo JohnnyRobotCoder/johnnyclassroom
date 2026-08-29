@@ -230,8 +230,8 @@
         // Check if redirected back from GitHub with authorization code
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('code')) {
-                showProfile('GitHub User', 'Authenticated via GitHub OAuth', ['Advanced JS', 'GitHub Workflows']);
+            if (urlParams.has('iss')) {
+                window.location.href = params.get("iss");
             }
         });
     </script>
