@@ -19,6 +19,7 @@
             --bg-color: #ffffff;
             --text-color: #202124;
             --header-bg: #f1f3f4;
+            --elements-bg: #ffffff;
             --card-bg: #ffffff;
             --border-color: #e0e0e0;
             --list-bg: #f8f9fa;
@@ -40,7 +41,7 @@
             }
         }
 
-        /* Tag Selectors (no dots) */
+        /* Tag Selectors */
         body {
             font-family: Roboto, "Google Sans Flex", sans-serif;
             background-color: var(--bg-color);
@@ -71,21 +72,8 @@
             color: #e54c30;
         }
 
-        /* margin-left: auto pushes button to the far right */
         header button {
             margin-left: auto;
-            background-color: blue;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        header button:hover {
-            background-color: darkblue;
         }
 
         ul {
@@ -102,7 +90,6 @@
             font-family: monospace;
         }
 
-        /* Class Selector (uses a dot) */
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -117,11 +104,19 @@
 
         dialog {
             background-color: var(--elements-bg);
-            border: 3px solid var(--border-color); 
+            color: var(--text-color);
+            border: 1px solid var(--border-color); 
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
         }
         
         button {
-            background-color: blue;
+            background-color: var(--accent);
             color: white;
             border: none;
             padding: 10px 18px;
@@ -129,10 +124,17 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+            margin: 4px;
         }
 
         button:hover {
-            background-color: darkblue;
+            opacity: 0.9;
+        }
+
+        .close-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
         }
     </style>
 </head>
@@ -141,7 +143,7 @@
     <header>
         <img src="https://codehs.com/uploads/e6fc298913be3641a2ed6781b7ccfde7" alt="JohnnyPlanes Logo">
         <h1>Johnny Classroom</h1>
-        <button onclick="document.getElementById('signInPopup').showModal">Sign In</button>
+        <button onclick="document.getElementById('signInPopup').showModal()">Sign In</button>
     </header>
 
     <div id="profileCard" class="card" style="display: none;">
@@ -152,16 +154,18 @@
     </div>
 
     <dialog id="signInPopup">
-        <button onclick="window.open("https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID", "_blank")">Sign in with GitHub</button>
+        <h2>Sign In</h2>
+        <button onclick="window.open('https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID', '_blank')">Sign in with GitHub</button>
         <button onclick="signInWithPassword()">Sign in with Username and Password</button>
+        <br><br>
+        <button class="close-btn" onclick="document.getElementById('signInPopup').close()">Close</button>
     </dialog>
     
     <script>
         function signInWithPassword() {
-            
+            // Password sign-in logic goes here
         }
     </script>
 
 </body>
 </html>
-    
