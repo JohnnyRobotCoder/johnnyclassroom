@@ -1,13 +1,19 @@
 {
   "users": [
     {
-      "username": "johnny123",
-      "name": "Johnny Robot",
-      "role": "Teacher"
+      "username": "johnArias",
+      "name": "John",
+      "role": "Teacher",
+      "classes": [],
+      "muted_classes": [],
+      "owned_classes": [608380],
+      "teaching_classes": [608380]
     },
     {
-      "username": "alex_student",
-      "name": "Alex Smith",
+      "username": "james_arias_cool_kid_account",
+      "name": "James Arias",
+      "classes": [],
+      "muted_classes": [],
       "role": "Student"
     }
   ]
@@ -15,8 +21,9 @@
 {
   "className": "John's Classroom",
   "teacher": "John",
-  "announcements": [
-    ""
+  "announcements":
+    "John: Welcome to the first year!"
   ],
-  "isLive": true
+  "class_code": 608380,
+  "muted": false,
 }
