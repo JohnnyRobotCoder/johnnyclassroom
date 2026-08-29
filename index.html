@@ -1,65 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Johnny Classroom</title>
-        <link rel="icon" href="https://codehs.com/uploads/b96481bcf30fa84e3357281066bf333c">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <style>
-            body {
-                font-family: Roboto, "Google Sans Flex";        
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Johnny Classroom</title>
+    <link rel="icon" href="https://codehs.com/uploads/b96481bcf30fa84e3357281066bf333c">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables for Browser Theme Matching */
+        :root {
+            color-scheme: light dark;
+
+            /* Light mode defaults */
+            --bg-color: #ffffff;
+            --text-color: #202124;
+            --header-bg: #f1f3f4;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --list-bg: #f8f9fa;
+            --accent: #1a73e8;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Listens directly to Chrome browser theme setting */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #202124;
+                --text-color: #e8eaed;
+                --header-bg: #292a2d;
+                --card-bg: #292a2d;
+                --border-color: #3c4043;
+                --list-bg: #35363a;
+                --accent: #8ab4f8;
+                --shadow: rgba(0, 0, 0, 0.4);
             }
+        }
 
-            header {
-                background-color: white;
-                padding: 15px 30px;
-                border-bottom: 2px solid #ddd;
-                display: flex;
-                align-items: center;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        /* Tag Selectors (no dots) */
+        body {
+            font-family: Roboto, "Google Sans Flex", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px var(--shadow);
+            transition: background-color 0.2s ease;
+        }
+
+        header img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #e54c30;
+        }
+
+        /* margin-left: auto pushes button to the far right */
+        header button {
+            margin-left: auto;
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        header button:hover {
+            background-color: darkblue;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: var(--list-bg);
+            border: 1px solid var(--border-color);
+            margin: 6px 0;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: monospace;
+        }
+
+        /* Class Selector (uses a dot) */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 350px;
+            margin: 40px auto;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: background-color 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://codehs.com/uploads/e6fc298913be3641a2ed6781b7ccfde7" alt="JohnnyPlanes Logo">
+        <h1>Johnny Classroom</h1>
+        <button onclick="signIn()">Sign In</button>
+    </header>
+
+    <div id="profileCard" class="card" style="display: none;">
+        <h2 id="userName"></h2>
+        <p id="userRole"></p>
+        <h3>My Classes</h3>
+        <ul id="classList"></ul>
+    </div>
+
+    <script>
+        async function signIn() {
+            const inputUsername = prompt("Enter your username (e.g., johnny123):");
+            if (!inputUsername) return;
+
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/JohnnyRobotCoder/johnnyclassroom/main/data.json');
+                if (!response.ok) throw new Error('Could not find data.json');
+                
+                const data = await response.json();
+                const matchedUser = data.users.find(u => u.username === inputUsername);
+
+                if (matchedUser) {
+                    document.getElementById('profileCard').style.display = 'block';
+                    document.getElementById('userName').innerText = matchedUser.name;
+                    document.getElementById('userRole').innerText = "Role: " + matchedUser.role;
+
+                    const classListElement = document.getElementById('classList');
+                    classListElement.innerHTML = '';
+
+                    if (matchedUser.classes) {
+                        matchedUser.classes.forEach(classId => {
+                            const li = document.createElement('li');
+                            li.innerText = 'Class ID: ' + classId;
+                            classListElement.appendChild(li);
+                        });
+                    }
+                } else {
+                    alert("User not found!");
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                alert("Could not load data.json. Make sure the file exists on GitHub!");
             }
-            header img { height: 40px; margin-right: 15px; }
-            header h1 { margin: 0; font-size: 28px; color: #e54c30; }
-            
-            #dataContainer {
-                padding: 20px;
-                font-family: monospace;
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <img src="https://codehs.com/uploads/e6fc298913be3641a2ed6781b7ccfde7" alt="JohnnyPlanes Logo">
-            <h1>Johnny Classroom</h1>
-            <button onclick="signIn()">Sign In</button>
-        </header>
+        }
+    </script>
 
-        <dialog id="signInDialog"></dialog>
-
-        <div id="dataContainer"></div>
-
-        <script>
-          const signInPopup = document.getElementById('signInDialog');
-          const dataContainer = document.getElementById('dataContainer');
-
-          function signIn() {
-              fetch('https://raw.githubusercontent.com/JohnnyRobotCoder/johnnyclassroom/main/data.json')
-                  .then(response => {
-                      if (!response.ok) {
-                          throw new Error('Could not find data.json');
-                      }
-                      return response.json();
-                  })
-                  .then(data => {
-                      console.log('Fetched data:', data);
-                      // Displays raw JSON on page when button is clicked
-                      dataContainer.innerText = JSON.stringify(data, null, 2);
-                  })
-                  .catch(error => console.error('Fetch error:', error));        
-          }
-        </script>
-    </body>    
+</body>
 </html>
+    
