@@ -213,9 +213,17 @@ async function updateGitHubFile(newText, fileSha) {
 }
 
 function signIn() {
-  const username = document.getElementById("useranemInput").value;
+  const username = document.getElementById("usernameInput").value;
+  const password = document.getElementById("passwordInput").value;
   const fileData = await getGitHubFile();
-  const users = fileData.users; 
+  const users = fileData.users;
+
+  if (users.some(user => user.username === usernameInputVal && user.password === passwordInputVal) {
+    const userRow = users.find(user => user.username === usernameInputVal);
+    userEmail = userRow.email;  
+  } else {
+    
+  }
 }
 
 async functiontBase64 = Buffer.from(jsonString, 'utf-8').toString('base64');
