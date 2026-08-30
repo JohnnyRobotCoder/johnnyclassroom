@@ -6,7 +6,7 @@
       "role": "Teacher",
       "classes": [],
       "muted_classes": [],
-      "owned_classes": [608380],
+      "owned_classes":,
       "teaching_classes": [608380]
     },
     {
@@ -16,14 +16,12 @@
       "muted_classes": [],
       "role": "Student"
     }
-  ]
-}
-{
-  "className": "John's Classroom",
-  "teacher": "John",
-  "announcements":
-    "John: Welcome to the first year!"
   ],
-  "class_code": 608380,
-  "muted": false,
+  "classroom": {
+    "className": "John's Classroom",
+    "teacher": "John",
+    "announcements": "John: Welcome to the first year!",
+    "class_code": 608380,
+    "muted": false
+  }
 }
