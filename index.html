@@ -181,9 +181,13 @@ button:hover {
     <button onclick="signIn()">Sign In</button>
   </div>
   <br><br>
-  <button class="close-btn" onclick="document.getElementById('signInPopup').close()">Close</button>]
+  <button class="close-btn" onclick="document.getElementById('signInPopup').close()">Close</button>
 </dialog>
 
+<dialog id="addClassPopup">
+  
+</dialog>
+  
 <script>
 const owner = 'johnny0robot';
 const repo = 'johnnyclassroom';
@@ -200,7 +204,7 @@ async function updateGitHubFile(newText, fileSha) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      message: 'Updated file via website text editor',
+       message: 'Updated file via website text editor',
       content: updatedContentBase64,
       sha: fileSha
     })
@@ -208,11 +212,13 @@ async function updateGitHubFile(newText, fileSha) {
   return await response.json();
 }
 
-function signIn() {}
+function signIn() {
+  const username = document.getElementById("useranemInput").value;
+  const fileData = await getGitHubFile();
+  const users = fileData.users; 
+}
 
-async function updateJsonFile(modifiedObject, fileSha) {
-  const jsonString = JSON.stringify(modifiedObject, null, 2);
-  const updatedContentBase64 = Buffer.from(jsonString, 'utf-8').toString('base64');
+async functiontBase64 = Buffer.from(jsonString, 'utf-8').toString('base64');
   const response = await fetch(`https://github.com{owner}/${repo}/contents/${path}`, {
     method: 'PUT',
     headers: {
@@ -228,6 +234,27 @@ async function updateJsonFile(modifiedObject, fileSha) {
   });
   return await response.json();
 }
+
+async function getGitHubFile() {
+  const response = await fetch(`https://github.com{owner}/${repo}/contents/data.json`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/vnd.github+json'
+    }
+  });
+
+  const data = await response.json();
+
+  // GitHub sends files in a secret code called Base64, so we must decode it
+  const decodedText = atob(data.content); 
+  
+  // This turns the text into a real JavaScript object you can use!
+  const jsonObject = JSON.parse(decodedText); 
+  
+  return jsonObject;
+}
+  
 </script>
 </body>
 </html>
