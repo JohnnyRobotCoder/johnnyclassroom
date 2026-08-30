@@ -7,14 +7,16 @@
       "classes": [],
       "muted_classes": [],
       "owned_classes":,
-      "teaching_classes": [608380]
+      "teaching_classes": [608380],
+      "password": "78956784"
     },
     {
       "username": "james_arias_cool_kid_account",
       "name": "James Arias",
       "classes": [],
       "muted_classes": [],
-      "role": "Student"
+      "role": "Student",
+      "password": "abcdg"
     }
   ],
   "classroom": {
