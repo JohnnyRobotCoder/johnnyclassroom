@@ -4,9 +4,9 @@
       "username": "johnArias",
       "name": "John",
       "role": "Teacher",
-      "classes": [],
+      "classes": [608380],
       "muted_classes": [],
-      "owned_classes": [],
+      "owned_classes": [608380],
       "teaching_classes": [608380],
       "password": "78956784"
     },
