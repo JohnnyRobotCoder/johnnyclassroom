@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
 <title>Johnny Classroom</title>
-<link rel="icon" href="https://github.com/johnny0robot/johnnyclassroom/blob/main/Untitled%20design%20(2).png?raw=true">
+<link rel="icon" href="https://github.com">
 <link rel="preconnect" href="https://googleapis.com">
 <link rel="preconnect" href="https://gstatic.com" crossorigin>
-<link href="https://googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://googleapis.com" rel="stylesheet">
 <style>
 :root {
   color-scheme: light dark;
@@ -21,13 +21,14 @@
   --list-bg: #f8f9fa;
   --accent: #1a73e8;
   --shadow: rgba(0, 0, 0, 0.1);
+  --brand-red: #e54c30;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #202124;
     --text-color: #e8eaed;
-    --header-bg: #2d2d30; /* Light black for the top bar */
+    --header-bg: #2d2d30; 
     --elements-bg: #292a2d;
     --card-bg: #292a2d;
     --border-color: #3c4043;
@@ -63,7 +64,7 @@ header img {
 header h1 {
   margin: 0;
   font-size: 28px;
-  color: #e54c30;
+  color: var(--brand-red);
 }
 
 header button {
@@ -151,11 +152,53 @@ button:hover {
   color: var(--text-color);
   box-sizing: border-box;
 }
+
+/* RED LOADING SCREEN SCREEN OVERLAY */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.loading-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(229, 76, 48, 0.2);
+  border-top: 6px solid var(--brand-red);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
+
+<!-- Global Red Loading Overlay -->
+<div id="loadingScreen" class="loading-overlay">
+  <div class="loader"></div>
+</div>
+
 <header>
-  <img src="https://github.com/johnny0robot/johnnyclassroom/blob/main/Untitled%20design%20(2).png?raw=true" alt="Johnny Classroom Logo">
+  <img src="https://github.com" alt="Johnny Classroom Logo">
   <h1>Johnny Classroom</h1>
   <button id="authBtn" onclick="document.getElementById('signInPopup').showModal()">Sign In</button>
 </header>
@@ -184,91 +227,125 @@ button:hover {
   <button class="close-btn" onclick="document.getElementById('signInPopup').close()">Close</button>
 </dialog>
 
-<dialog id="addClassPopup">
-  
-</dialog>
-  
+<dialog id="addClassPopup"></dialog>
 <script>
 const owner = 'johnny0robot';
 const repo = 'johnnyclassroom';
 const path = 'data.json';
-const token = process.env.GITHUB_TOKEN;
+
+// Keep track of this security element securely.
+const token = 'YOUR_GITHUB_TOKEN_HERE'; 
 
 let accountRole = null;  
+let userEmail = null;
 let ownedClasses = [];
 let teachingClasses = [];
 let classes = [];
 let mutedClasses = [];
-  
-async function updateGitHubFile(newText, fileSha) {
-  const updatedContentBase64 = Buffer.from(newText, 'utf-8').toString('base64');
-  const response = await fetch(`https://github.com{owner}/${repo}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-       message: 'Updated file via website text editor',
-      content: updatedContentBase64,
-      sha: fileSha
-    })
-  });
-  return await response.json();
+
+// Helper functions to control the red loading overlay
+function showLoader() {
+  document.getElementById('loadingScreen').classList.add('active');
 }
 
-function signIn() {
-  const username = document.getElementById("usernameInput").value;
-  const password = document.getElementById("passwordInput").value;
-  const fileData = await getGitHubFile();
-  const users = fileData.users;
-
-  if (users.some(user => user.username === usernameInputVal && user.password === passwordInputVal) {
-    const userRow = users.find(user => user.username === usernameInputVal);
-    userEmail = userRow.email;  
-  } else {
-    
+function hideLoader() {
+  document.getElementById('loadingScreen').classList.remove('active');
+}
+  
+async function updateGitHubFile(newText, fileSha) {
+  showLoader();
+  try {
+    const updatedContentBase64 = btoa(unescape(encodeURIComponent(newText)));
+    const response = await fetch(`https://github.com{owner}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: 'Updated file via website text editor',
+        content: updatedContentBase64,
+        sha: fileSha
+      })
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating file:", error);
+  } finally {
+    hideLoader();
   }
 }
 
-async functiontBase64 = Buffer.from(jsonString, 'utf-8').toString('base64');
-  const response = await fetch(`https://github.com{owner}/${repo}/contents/${path}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      message: 'Automated data.json update via website',
-      content: updatedContentBase64,
-      sha: fileSha
-    })
-  });
-  return await response.json();
+async function signIn() {
+  const usernameVal = document.getElementById("usernameInput").value;
+  const passwordVal = document.getElementById("passwordInput").value;
+  
+  if (!usernameVal || !passwordVal) {
+    alert("Please fill out all fields.");
+    return;
+  }
+
+  showLoader();
+  try {
+    const fileData = await getGitHubFile();
+    
+    if (!fileData || !fileData.users) {
+      alert("Could not load user data from storage.");
+      return;
+    }
+
+    const users = fileData.users;
+    const userRow = users.find(user => user.username === usernameVal && user.password === passwordVal);
+
+    if (userRow) {
+      userEmail = userRow.email;  
+      accountRole = userRow.role || 'Student';
+      
+      document.getElementById('signInPopup').close();
+      document.getElementById('authBtn').style.display = 'none';
+      
+      document.getElementById('userName').innerText = usernameVal;
+      document.getElementById('userRole').innerText = accountRole;
+      document.getElementById('profileCard').style.display = 'block';
+      
+      alert(`Welcome back, ${usernameVal}!`);
+    } else {
+      alert("Invalid credentials!"); 
+    }
+  } catch (error) {
+    console.error("Sign-in process failed:", error);
+    alert("An error occurred during sign-in.");
+  } finally {
+    hideLoader();
+  }
 }
 
 async function getGitHubFile() {
-  const response = await fetch(`https://github.com{owner}/${repo}/contents/data.json`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github+json'
+  showLoader();
+  try {
+    const response = await fetch(`https://github.com{owner}/${repo}/contents/${path}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
 
-  const data = await response.json();
-
-  // GitHub sends files in a secret code called Base64, so we must decode it
-  const decodedText = atob(data.content); 
-  
-  // This turns the text into a real JavaScript object you can use!
-  const jsonObject = JSON.parse(decodedText); 
-  
-  return jsonObject;
+    const data = await response.json();
+    const decodedText = decodeURIComponent(escape(atob(data.content))); 
+    return JSON.parse(decodedText); 
+  } catch (error) {
+    console.error("Failed fetching configuration data:", error);
+    return null;
+  } finally {
+    hideLoader();
+  }
 }
-  
 </script>
 </body>
 </html>
